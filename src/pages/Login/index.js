@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 
 import { getCurrentUser, login } from "../../store/account/actions";
+import { UrlConstants } from "../../constants";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ export const Login = () => {
       dispatch(getCurrentUser());
     } else if (expiredAt && new Date(expiredAt) > new Date()) {
       const redirectTo =
-        location.state?.from || (role === "ADMIN" ? "/admin" : "/group");
+        location.state?.from ||
+        (role === "ADMIN" ? UrlConstants.ADMIN_HOME : UrlConstants.HOME);
       navigate(redirectTo, { replace: true });
     }
   }, [dispatch, navigate, expiredAt]);

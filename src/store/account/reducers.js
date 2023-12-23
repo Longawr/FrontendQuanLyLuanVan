@@ -30,7 +30,7 @@ export const accountReducer = (state = initialState, action) => {
   switch (action.type) {
     //login
     case USER_LOGIN_REQUEST:
-      return { searchItems: [], loading: true };
+      return { ...state, searchItems: [], loading: true };
     case USER_LOGIN_SUCCESS:
       return { searchItems: [], loading: false, auth: action.payload };
     case USER_LOGIN_FAILURE:

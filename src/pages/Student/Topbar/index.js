@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { logout } from "../../../store/account/actions";
 import {
@@ -10,16 +10,21 @@ import {
   markAsRead,
   removeInvite,
 } from "../../../store/invite/actions";
+import { UrlConstants } from "../../../constants";
 
 export const Topbar = () => {
-  const dispatch = useDispatch();
+  const NOTHING = 0;
+  const USER_INFO = 1;
+  const RECEIVED_INVITES = 2;
+  const SENT_INVITES = 3;
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.account);
   const receivedInvites = useSelector((state) => state.invites.receivedInvites);
   const sentInvites = useSelector((state) => state.invites.sentInvites);
 
-  const [topbarShowDropdown, setTopbarShowDropdown] = useState(0);
-  //nothing === 0; userInfo === 1; receivedInvites === 2; sentInvites === 3
+  const [topbarShowDropdown, setTopbarShowDropdown] = useState(NOTHING);
 
   useEffect(() => {
     dispatch(getReceivedInvitation());
@@ -134,6 +139,12 @@ export const Topbar = () => {
     );
   });
 
+  const handleLogout = (e) => {
+    dispatch(logout()).then(() =>
+      navigate(UrlConstants.LOGIN, { state: null })
+    );
+  };
+
   return (
     <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
       {/* Sidebar Toggle (Topbar) */}
@@ -201,7 +212,7 @@ export const Topbar = () => {
         <li
           className={
             "nav-item dropdown no-arrow mx-1" +
-            (topbarShowDropdown === 3 ? " show" : "")
+            (topbarShowDropdown === SENT_INVITES ? " show" : "")
           }
         >
           <a
@@ -210,10 +221,13 @@ export const Topbar = () => {
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
-            aria-expanded={topbarShowDropdown === 3 ? "true" : "false"}
+            aria-expanded={
+              topbarShowDropdown === SENT_INVITES ? "true" : "false"
+            }
             onClick={() => {
-              if (topbarShowDropdown !== 3) setTopbarShowDropdown(3);
-              else setTopbarShowDropdown(0);
+              if (topbarShowDropdown !== SENT_INVITES)
+                setTopbarShowDropdown(SENT_INVITES);
+              else setTopbarShowDropdown(NOTHING);
             }}
           >
             <i className="fas fa-bell fa-fw" /> Lời mời đã gửi
@@ -222,7 +236,7 @@ export const Topbar = () => {
           <div
             className={
               "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" +
-              (topbarShowDropdown === 3 ? " show" : "")
+              (topbarShowDropdown === SENT_INVITES ? " show" : "")
             }
             aria-labelledby="alertsDropdown"
           >
@@ -237,7 +251,7 @@ export const Topbar = () => {
         <li
           className={
             "nav-item dropdown no-arrow mx-1" +
-            (topbarShowDropdown === 2 ? " show" : "")
+            (topbarShowDropdown === RECEIVED_INVITES ? " show" : "")
           }
         >
           <a
@@ -246,10 +260,13 @@ export const Topbar = () => {
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
-            aria-expanded={topbarShowDropdown === 2 ? "true" : "false"}
+            aria-expanded={
+              topbarShowDropdown === RECEIVED_INVITES ? "true" : "false"
+            }
             onClick={() => {
-              if (topbarShowDropdown !== 2) setTopbarShowDropdown(2);
-              else setTopbarShowDropdown(0);
+              if (topbarShowDropdown !== RECEIVED_INVITES)
+                setTopbarShowDropdown(RECEIVED_INVITES);
+              else setTopbarShowDropdown(NOTHING);
             }}
           >
             <i className="fas fa-bell fa-fw" /> Lời mời đã nhận
@@ -264,7 +281,7 @@ export const Topbar = () => {
           <div
             className={
               "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" +
-              (topbarShowDropdown === 2 ? " show" : "")
+              (topbarShowDropdown === RECEIVED_INVITES ? " show" : "")
             }
             aria-labelledby="alertsDropdown"
           >
@@ -284,10 +301,11 @@ export const Topbar = () => {
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
-            aria-expanded={topbarShowDropdown === 1 ? "true" : "false"}
+            aria-expanded={topbarShowDropdown === USER_INFO ? "true" : "false"}
             onClick={() => {
-              if (topbarShowDropdown !== 1) setTopbarShowDropdown(1);
-              else setTopbarShowDropdown(0);
+              if (topbarShowDropdown !== USER_INFO)
+                setTopbarShowDropdown(USER_INFO);
+              else setTopbarShowDropdown(NOTHING);
             }}
           >
             <span className="mr-2 d-none d-lg-inline text-gray-600 small">
@@ -302,7 +320,7 @@ export const Topbar = () => {
           <div
             className={
               "dropdown-menu dropdown-menu-right shadow animated--grow-in" +
-              (topbarShowDropdown === 1 ? " show" : "")
+              (topbarShowDropdown === USER_INFO ? " show" : "")
             }
             aria-labelledby="userDropdown"
           >
@@ -319,10 +337,7 @@ export const Topbar = () => {
               Activity Log
             </a> */}
             <div className="dropdown-divider" />
-            <button
-              className="dropdown-item"
-              onClick={() => dispatch(logout())}
-            >
+            <button className="dropdown-item" onClick={handleLogout}>
               <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400" />
               Logout
             </button>

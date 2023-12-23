@@ -36,9 +36,6 @@ export const PrivateRoutes = () => {
   return getUserDispatched && accountState.user?._id ? (
     <Outlet />
   ) : (
-    <Navigate
-      to={UrlConstants.LOGIN}
-      state={accountState.auth?.expiredAt ? { from: location } : null}
-    />
+    <Navigate to={UrlConstants.LOGIN} replace state={{ from: location }} />
   );
 };

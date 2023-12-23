@@ -5,6 +5,7 @@ export const UrlConstants = {
   GROUP_DETAILS: "/group/:groupID",
   GROUP_EDIT: "/group/edit/",
   FILE_DOWNLOAD: "/file/download",
+  ADMIN_HOME: "/admin",
   STUDENTS_LIST: "/admin/student",
   STUDENT_ADD: "/admin/student/add",
   STUDENT_EDIT: "/admin/student/edit",
